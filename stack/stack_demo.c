@@ -2,10 +2,10 @@
 # include "stack.h"
 
 int main() {
-    Stack* pStack = newStack();
-    push(pStack, 42);
-    printf("Popped: %i\n", pop(pStack));
+    Stack stack = {0};
 
-    free(pStack);
+    push(&stack, 42);
+    printf("Popped: %i\n", pop(&stack));
+
     return 0;
 }

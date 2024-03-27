@@ -1,6 +1,8 @@
-# include <stdlib.h>
-# include <stdbool.h>
-const int STACK_SIZE = 16;
+#include <stdlib.h>
+#include <stdbool.h>
+#include<assert.h>
+
+#define STACK_SIZE 16
 
 struct Stack {
     int items[STACK_SIZE];
@@ -9,31 +11,26 @@ struct Stack {
 
 typedef struct Stack Stack;
 
-Stack* newStack() {
-    Stack* stack = malloc(sizeof(Stack));
-    stack->top = -1;
-    return(stack);
-}
-
-void emptyStack(Stack* stack) {
-    stack->top = -1;
-}
-
 bool isEmpty(Stack* stack) {
-    return(stack->top == -1);
+    return(stack->top == 0);
 }
 
 bool isFull(Stack* stack) {
-    return(stack->top == STACK_SIZE - 1);
+    return(stack->top == STACK_SIZE);
 }
 
 void push(Stack* stack, int item) {
-    stack->top++;
-    stack->items[stack->top] = item;
+    assert(!isFull(stack));
+    stack->items[stack->top++] = item;
+}
+
+int peek(Stack* stack) {
+    assert(!isEmpty(stack));
+    return(stack->items[stack->top - 1]);
 }
 
 int pop(Stack* stack) {
-    int out = stack->items[stack->top];
-    stack->top--;
-    return(out);
+    assert(!isEmpty(stack));
+    return(stack->items[--stack->top]);
 }
+
