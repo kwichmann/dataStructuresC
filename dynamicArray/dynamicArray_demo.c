@@ -3,7 +3,7 @@
 #include "dynamicArray_tests.c"
 
 int main() {
-DynamicArray dyn = initialize();
+    DynamicArray dyn = initialize();
     all_tests();
     return 0;
 }
