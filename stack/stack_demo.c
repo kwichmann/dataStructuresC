@@ -1,11 +1,9 @@
-# include <stdio.h>
-# include "stack.h"
+#include <stdio.h>
+#include "stack.h"
+#include "stack_tests.c" 
 
 int main() {
-    Stack stack = {0};
-
-    push(&stack, 42);
-    printf("Popped: %i\n", pop(&stack));
+    all_tests();
 
     return 0;
 }
