@@ -1,3 +1,6 @@
+#ifndef STACK_H
+#define STACK_H
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include <assert.h>
@@ -34,3 +37,4 @@ int pop(Stack* stack) {
     return(stack->items[--stack->top]);
 }
 
+#endif
