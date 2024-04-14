@@ -14,7 +14,7 @@ int main() {
     add_item(&hashMap, "bbbb", 555);
     add_item(&hashMap, "bbbb", 666);
     printf("%i\n", lookup_item(&hashMap, "bbbb"));
-    delete_item(&hashMap, "bbbb");
+    delete_item(&hashMap, "b");
     show_hashMap(&hashMap);
 
     return(0);

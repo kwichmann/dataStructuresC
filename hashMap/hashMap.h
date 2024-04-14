@@ -5,6 +5,8 @@
 #include <string.h>
 #include <assert.h>
 
+typedef uint64_t u64;
+
 /*
     fnv1a hashing function as described here:
     https://en.wikipedia.org/wiki/Fowler%E2%80%93Noll%E2%80%93Vo_hash_function#FNV-1a_hash
@@ -13,8 +15,8 @@
 #define FNV_offset_basis 0xcbf29ce484222325
 #define FNV_prime 0x100000001b3
 
-unsigned long long int fnv1a(char *data) {
-    unsigned long long int hash = FNV_offset_basis;
+u64 fnv1a(char *data) {
+    u64 hash = FNV_offset_basis;
     int index = 0;
     while (data[index] != 0) {
         hash = hash ^ data[index];
@@ -29,7 +31,7 @@ unsigned long long int fnv1a(char *data) {
 #define HASH_MASK (NUMBER_OF_BUCKETS - 1)
 
 struct BucketItem {
-    unsigned long long int hash;
+    u64 hash;
     int value;
 };
 
@@ -70,7 +72,7 @@ void downsize_bucket(Bucket *bucket) {
     bucket->array = realloc(bucket->array, bucket->capacity * sizeof(BucketItem));
 }
 
-void add_to_bucket(Bucket *bucket, unsigned long long int hash, int value) {
+void add_to_bucket(Bucket *bucket, u64 hash, int value) {
     for (int i = 0; i < bucket->size; i++) {
         if (bucket->array[i].hash == hash) {
             bucket->array[i].value = value;
@@ -84,31 +86,31 @@ void add_to_bucket(Bucket *bucket, unsigned long long int hash, int value) {
     bucket->array[bucket->size++].value = value;
 }
 
-int* lookup_in_bucket(Bucket *bucket, unsigned long long int hash) {
-    static int out; // Will this cause memory leak?
+int* lookup_in_bucket(Bucket *bucket, u64 hash) {
+    int *out = NULL;
     for (int i = 0; i < bucket->size; i++) {
         if (bucket->array[i].hash == hash) {
-            out = bucket->array[i].value;
-            return(&out);
+            out = &(bucket->array[i].value);
+            break;
         }
     }
-    return(NULL);
+    return(out);
 }
 
-int* delete_from_bucket(Bucket *bucket, unsigned long long int hash) {
-    static int out; // Will this cause memory leak?
+int* delete_from_bucket(Bucket *bucket, u64 hash) {
+    int *out = NULL;
     for (int i = 0; i < bucket->size; i++) {
         if (bucket->array[i].hash == hash) {
-            out = bucket->array[i].value;
+            out = &(bucket->array[i].value);
             if (bucket->size < bucket->capacity / 4) {
                 downsize_bucket(bucket);
             }
             memmove(&bucket->array[i], &bucket->array[i + 1], (bucket->size - i - 1) * sizeof(BucketItem));
             bucket->size--;
-            return(&out);
+            break;
         }
     }
-    return(NULL);
+    return(out);
 }
 
 struct HashMap {
@@ -131,13 +133,13 @@ void show_hashMap(HashMap *hashMap) {
 }
 
 void add_item(HashMap *hashMap, char *key, int value) {
-    unsigned long long int hash = fnv1a(key);
+    u64 hash = fnv1a(key);
     int bucketNumber = (int) hash & HASH_MASK;
     add_to_bucket(&(hashMap->buckets[bucketNumber]), hash, value);
 }
 
 int lookup_item(HashMap *hashMap, char *key) {
-    unsigned long long int hash = fnv1a(key);
+    u64 hash = fnv1a(key);
     int bucketNumber = (int) hash & HASH_MASK;
     int* lookup = lookup_in_bucket(&(hashMap->buckets[bucketNumber]), hash);
     assert(lookup != NULL);
@@ -145,7 +147,7 @@ int lookup_item(HashMap *hashMap, char *key) {
 }
 
 int delete_item(HashMap *hashMap, char *key) {
-    unsigned long long int hash = fnv1a(key);
+    u64 hash = fnv1a(key);
     int bucketNumber = (int) hash & HASH_MASK;
     int* lookup = delete_from_bucket(&(hashMap->buckets[bucketNumber]), hash);
     assert(lookup != NULL);
