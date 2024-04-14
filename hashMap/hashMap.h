@@ -97,11 +97,9 @@ int* lookup_in_bucket(Bucket *bucket, u64 hash) {
     return(out);
 }
 
-int* delete_from_bucket(Bucket *bucket, u64 hash) {
-    int *out = NULL;
+void delete_from_bucket(Bucket *bucket, u64 hash) {
     for (int i = 0; i < bucket->size; i++) {
         if (bucket->array[i].hash == hash) {
-            out = &(bucket->array[i].value);
             if (bucket->size < bucket->capacity / 4) {
                 downsize_bucket(bucket);
             }
@@ -110,7 +108,6 @@ int* delete_from_bucket(Bucket *bucket, u64 hash) {
             break;
         }
     }
-    return(out);
 }
 
 struct HashMap {
@@ -154,12 +151,10 @@ int lookup_item(HashMap *hashMap, char *key) {
     return(*lookup);
 }
 
-int delete_item(HashMap *hashMap, char *key) {
+void delete_item(HashMap *hashMap, char *key) {
     u64 hash = fnv1a(key);
     int bucketNumber = (int) hash & HASH_MASK;
-    int* lookup = delete_from_bucket(&(hashMap->buckets[bucketNumber]), hash);
-    assert(lookup != NULL);
-    return(*lookup);
+    delete_from_bucket(&(hashMap->buckets[bucketNumber]), hash);
 }
 
 #endif
