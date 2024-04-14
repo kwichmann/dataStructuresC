@@ -132,6 +132,14 @@ void show_hashMap(HashMap *hashMap) {
     }
 }
 
+int length_hashMap(HashMap *hashMap) {
+    int length = 0;
+    for (int i = 0; i < NUMBER_OF_BUCKETS; i++) {
+        length += hashMap->buckets[i].size;
+    }
+    return(length);
+}
+
 void add_item(HashMap *hashMap, char *key, int value) {
     u64 hash = fnv1a(key);
     int bucketNumber = (int) hash & HASH_MASK;
