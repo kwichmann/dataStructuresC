@@ -23,10 +23,14 @@ Arena makeArena(unsigned int size) {
 }
 
 void* arenaAllocate(Arena *arena, unsigned int requestSize) {
-    requestSize = ((requestSize - 1) | (ALIGNMENT_SIZE - 1)) + 1;
-    assert(arena->currentOffset + requestSize < arena->size);
-    void* out = arena->start + arena->currentOffset;
-    arena->currentOffset += requestSize;
+    void* out = NULL;
+    if (requestSize > 0) {
+        requestSize = ((requestSize - 1) | (ALIGNMENT_SIZE - 1)) + 1;
+        if (arena->currentOffset + requestSize <= arena->size) {
+            out = arena->start + arena->currentOffset;
+            arena->currentOffset += requestSize;
+        }
+    }
     return(out);
 }
 
