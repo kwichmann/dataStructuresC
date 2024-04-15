@@ -10,6 +10,12 @@ void test_allocation() {
     assert(arena.currentOffset == 512);
     void* myAllocation2 = arenaAllocate(&arena, 256);
     assert(arena.currentOffset == 768);
+    // Alignment
+    void* myAllocation3 = arenaAllocate(&arena, 12);
+    assert(arena.currentOffset == 768 + ALIGNMENT_SIZE);
+    // Reset
+    arenaReset(&arena);
+    assert(arena.currentOffset == 0);
     freeArena(&arena);
 }
 
@@ -33,6 +39,7 @@ void test_struct_casting() {
     abc2->a = 2;
     abc2->b = 22;
     abc2->c = 222;
+    freeArena(&arena);
 }
 
 void all_tests() {

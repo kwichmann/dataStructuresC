@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <assert.h>
 
+#define ALIGNMENT_SIZE 16
+
 struct Arena {
     void* start;
     unsigned int size;
@@ -21,10 +23,15 @@ Arena makeArena(unsigned int size) {
 }
 
 void* arenaAllocate(Arena *arena, unsigned int requestSize) {
+    requestSize = ((requestSize - 1) | (ALIGNMENT_SIZE - 1)) + 1;
     assert(arena->currentOffset + requestSize < arena->size);
     void* out = arena->start + arena->currentOffset;
     arena->currentOffset += requestSize;
     return(out);
+}
+
+void arenaReset(Arena *arena) {
+    arena->currentOffset = 0;
 }
 
 void freeArena(Arena *arena) {
