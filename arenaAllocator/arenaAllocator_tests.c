@@ -50,7 +50,7 @@ void test_struct_casting() {
     abc2->a = 2;
     abc2->b = 22;
     abc2->c = 222;
-    // No room for a third struck in arena
+    // No room for a third struct in arena
     assert(arenaAllocate(&arena, abc_size) == NULL);
     freeArena(&arena);
 }
