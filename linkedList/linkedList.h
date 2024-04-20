@@ -25,6 +25,19 @@ List* tail(List *list) {
     return(tail(list->next));
 }
 
+List* second_to_last(List *list) {
+    if (list == NULL) {
+        return(NULL);
+    }
+    if (list->next == NULL) {
+        return(NULL);
+    }
+    if (list->next->next == NULL) {
+        return(list);
+    }
+    return(second_to_last(list->next));
+}
+
 List* element(List *list, unsigned int index) {
     if (list == NULL) {
         return(NULL);
@@ -74,14 +87,39 @@ List* append(List *list, int value, Arena *arena) {
 
 List* insert(List *list, unsigned int index, int value, Arena *arena) {
     List *active_element = element(list, index);
-    if (active_element == NULL) {
-        return(NULL);
-    }
+    assert(active_element != NULL);
     List *insertion = (List*) arenaAllocate(arena, sizeof(List));
     assert(insertion != NULL);
     insertion->value = value;
     insertion->next = active_element->next;
     active_element->next = insertion;
+    return(list);
+}
+
+List* pretach(List *list) {
+    if (list == NULL) {
+        return(NULL);
+    }
+    return(list->next);
+}
+
+List* detach(List *list) {
+    List *pre_tail = second_to_last(list);
+    if (pre_tail == NULL) {
+        return(NULL);
+    }
+    pre_tail->next = NULL;
+    return(list);
+}
+
+List* delete(List *list, unsigned int index) {
+    if (index == 0) {
+        return(pretach(list));
+    }
+    List* active_element = element(list, index - 1);
+    assert(active_element != NULL);
+    assert(active_element->next != NULL);
+    active_element->next = active_element->next->next;
     return(list);
 }
 
