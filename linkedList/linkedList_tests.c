@@ -1,5 +1,5 @@
 #include <assert.h>
-#include "arenaAllocator.h"
+#include "../arenaAllocator/arenaAllocator.h"
 #include "linkedList.h"
 
 void test_empty() {

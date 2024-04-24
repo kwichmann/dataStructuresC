@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "arenaAllocator.h"
+#include "../arenaAllocator/arenaAllocator.h"
 #include "linkedList.h"
 #include "linkedList_tests.c"
 
